@@ -1,10 +1,10 @@
 const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 const btoa = require("btoa");
 const wml_credentials = new Map();
-const HTTP = require('http')
+const HTTPS = require('https')
 
 function apiPost(scoring_url, token, mlInstanceID, payload, loadCallback, errorCallback){
-	const oReq = new HTTP();
+	const oReq = new HTTPS();
 	oReq.addEventListener("load", loadCallback);
 	oReq.addEventListener("error", errorCallback);
 	oReq.open("POST", scoring_url);
