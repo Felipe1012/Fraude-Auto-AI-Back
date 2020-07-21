@@ -20,7 +20,6 @@ router.post("/upload-text", async function (req, res) {
   //
   var IBM_Cloud_IAM_uid = "bx";
   var IBM_Cloud_IAM_pwd = "bx";
-
   var options = {
     url: "https://iam.bluemix.net/oidc/token",
     headers: {
@@ -29,7 +28,6 @@ router.post("/upload-text", async function (req, res) {
     },
     body: "apikey=" + apikey + "&grant_type=urn:ibm:params:oauth:grant-type:apikey"
   };
-
 
   request.post(options, function (error, response, body) {
     var iam_token = JSON.parse(body)["access_token"];
@@ -42,13 +40,11 @@ router.post("/upload-text", async function (req, res) {
           status: false,
           message: "No text uploaded",
         });
-
       } else {
         const wmlToken = "Bearer " + iam_token;
         const mlInstanceId = "ef6690c5-963d-417f-bc6c-0b134690ad8a";
         const payload = inputText;
         const scoring_url = "https://us-south.ml.cloud.ibm.com/v4/deployments/7c26ff08-315f-433f-86e2-54bc60c037b3/predictions";
-
         apiPost(scoring_url, wmlToken, mlInstanceId, payload, function (resp) {
           let parsedPostResponse;
           try {
@@ -70,7 +66,4 @@ router.post("/upload-text", async function (req, res) {
     }
   });
 });
-
-
-
 module.exports = router;
