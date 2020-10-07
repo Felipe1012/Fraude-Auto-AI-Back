@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const params = require("../params");
 const fs = require("fs");
-const apiPost = require("../utils/watsonNL");
+const apiPost = require("../utils/watsonML");
 
 // Watson NLU Route for analize text
 router.post("/upload-text", async function (req, res) {
@@ -33,7 +33,7 @@ var iam_token
         console.log(iam_token)
 
 
-        const scoring_url = "https://us-south.ml.cloud.ibm.com/ml/v4/deployments/e77dff64-78c3-4ec1-a950-212417740eb6/predictions?version=2020-09-22";
+        const scoring_url = "https://us-south.ml.cloud.ibm.com/ml/v4/deployments/e77dff64-78c3-4ec1-a950-212417740eb6/predictions?version=2020-09-30";
 
         const wmlToken = "Bearer " + iam_token;
          var payload=JSON.stringify(inputText)
