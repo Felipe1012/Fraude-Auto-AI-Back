@@ -1,7 +1,4 @@
 const router = require("express").Router();
-const callNLUnderstanding = require("../utils/watsonNL");
-const proDataNL = require("../utils/proDataNL");
-
 const params = require("../params");
 const fs = require("fs");
 const apiPost = require("../utils/watsonNL");
@@ -14,7 +11,7 @@ router.post("/upload-text", async function (req, res) {
   console.log("hola")
 
   // Paste your Watson Machine Learning service apikey here
-  var apikey = "8c_588CSFnrCAhslkRTBL4Mv4aeOFPIHJ3yl-NoEPcE3";
+  var apikey = "OsN5YGaPVWgAFSrsC1o3LFXDnAFNdNUQdGRZuRMOo_7E";
 
   // Use this code as written to get an access token from IBM Cloud REST API
   //
@@ -28,42 +25,36 @@ router.post("/upload-text", async function (req, res) {
     },
     body: "apikey=" + apikey + "&grant_type=urn:ibm:params:oauth:grant-type:apikey"
   };
-
+var iam_token
   request.post(options, function (error, response, body) {
-    var iam_token = JSON.parse(body)["access_token"];
-    console.log(iam_token)
-    const hola = JSON.stringify(inputText)
-    console.log(inputText);
-    try {
-      if (!inputText) {
-        res.send({
-          status: false,
-          message: "No text uploaded",
-        });
-      } else {
+     iam_token = JSON.parse(body)["access_token"];
+    //console.log(iam_token)
+ 
+        console.log(iam_token)
+
+
+        const scoring_url = "https://us-south.ml.cloud.ibm.com/ml/v4/deployments/e77dff64-78c3-4ec1-a950-212417740eb6/predictions?version=2020-09-22";
+
         const wmlToken = "Bearer " + iam_token;
-        const mlInstanceId = "ef6690c5-963d-417f-bc6c-0b134690ad8a";
-        const payload = inputText;
-        const scoring_url = "https://us-south.ml.cloud.ibm.com/v4/deployments/7c26ff08-315f-433f-86e2-54bc60c037b3/predictions";
-        apiPost(scoring_url, wmlToken, mlInstanceId, payload, function (resp) {
+         var payload=JSON.stringify(inputText)
+         payload = payload.replace(/\\/g, "");
+
+         console.log(payload)
+        apiPost(scoring_url, wmlToken, payload, function (resp) {
           let parsedPostResponse;
           try {
             parsedPostResponse = JSON.parse(this.responseText);
-            var respuesta = JSON.stringify(parsedPostResponse);
-            res.send(respuesta)
           } catch (ex) {
             // TODO: handle parsing exception
           }
           console.log("Scoring response");
-          console.log(respuesta);
+          console.log(parsedPostResponse);
+          res.send(parsedPostResponse)
+
         }, function (error) {
           console.log(error);
         });
-        console.log("\nDone!");
-      }
-    } catch (err) {
-      res.status(500).json({ message: "No se pudo analizar el texto ingresado" });
-    }
   });
+
 });
 module.exports = router;
